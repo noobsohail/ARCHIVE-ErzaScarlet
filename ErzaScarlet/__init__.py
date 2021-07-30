@@ -96,7 +96,7 @@ if ENV:
     BOT_TOKEN = os.environ.get("TOKEN", None)
     TRIGGERS = os.environ.get("TRIGGERS", "/ !").split(" ")
     OWNER = list(filter(lambda x: x, map(int, os.environ.get("OWNER_ID").split())))  ## sudos can be included
-    tbot = TelegramClient("anon", API_ID, API_HASH).start(BOT_TOKEN=BOT_TOKEN)
+    tbot = TelegramClient(None, API_ID, API_HASH)
 
     try:
         BL_CHATS = set(int(x) for x in os.environ.get('BL_CHATS', "").split())
