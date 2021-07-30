@@ -91,6 +91,7 @@ if ENV:
     SUPPORT_CHAT = os.environ.get('SUPPORT_CHAT', None)
     SPAMWATCH_SUPPORT_CHAT = os.environ.get('SPAMWATCH_SUPPORT_CHAT', None)
     SPAMWATCH_API = os.environ.get('SPAMWATCH_API', None)
+    BOT_ID = int(os.environ.get("BOT_ID", None))
     tbot = TelegramClient(None, API_ID, API_HASH)
 
     try:
@@ -160,6 +161,7 @@ else:
     SUPPORT_CHAT = Config.SUPPORT_CHAT
     SPAMWATCH_SUPPORT_CHAT = Config.SPAMWATCH_SUPPORT_CHAT
     SPAMWATCH_API = Config.SPAMWATCH_API
+    BOT_ID = Config.BOT_ID
     INFOPIC = Config.INFOPIC
 
     try:
