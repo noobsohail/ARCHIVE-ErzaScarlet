@@ -11,7 +11,7 @@ from ErzaScarlet import *
 
 xyz = "A qt waifu appeared! Add them to your harem by sending /protecc character name"
 
-@Client.on_message(filters.command(['wai', f'wai{BOT_USERNAME}']))
+@Client.on_message(filters.command(['wai', f'wai{BOT_USERNAME}'], prefixes=TRIGGERS))
 async def saucenao(client: Client, message: Message):
     reply = message.reply_to_message
     media = reply.photo

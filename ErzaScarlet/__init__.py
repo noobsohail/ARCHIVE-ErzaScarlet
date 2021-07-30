@@ -93,7 +93,10 @@ if ENV:
     SPAMWATCH_API = os.environ.get('SPAMWATCH_API', None)
     BOT_ID = int(os.environ.get("BOT_ID", None))
     BOT_USERNAME = os.environ.get("BOT_USERNAME", None)
-    tbot = TelegramClient(None, API_ID, API_HASH)
+    BOT_TOKEN = os.environ.get("TOKEN", None)
+    TRIGGERS = os.environ.get("TRIGGERS", "/ !").split(" ")
+    OWNER = list(filter(lambda x: x, map(int, os.environ.get("OWNER_ID").split())))  ## sudos can be included
+    tbot = TelegramClient(None, api_id, api_hash).start(bot_token=bot_token)
 
     try:
         BL_CHATS = set(int(x) for x in os.environ.get('BL_CHATS', "").split())
