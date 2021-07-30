@@ -1,5 +1,6 @@
 ![ErzaScarlet](https://telegra.ph/file/343adbad88ced796bc03a.jpg)
 # ErzaScarlet 
+This Branch Use MongoDbURI .
 
 A Modular Telegram Anime Based Group Management bot. It's an edited version SaitamaBot which was created by AnimeKaizoku Team.
 
@@ -17,7 +18,7 @@ You can easily deploy on heroku : Just click below button
 git clone https://github.com/noobsohail/ErzaScarlet </br>
 Go to ErzaScarlet > sample_config.py edit file name to config.py </br>
 Then fill All Vars Like </br>
-<b> API ID , API HASH , BOT TOKEN , OWNER ID , JOIN LOGGER , EVENT LOGS , SQLALCHEMY_DATABASE_URI </b>
+<b> API ID , API HASH , BOT TOKEN , OWNER ID , JOIN LOGGER , EVENT LOGS , SQLALCHEMY_DATABASE_URI, MONGO_DB_URI </b>
 After this save everything. </br>
 Then run bot python3 -m ErzaScarlet </br>
 '''
