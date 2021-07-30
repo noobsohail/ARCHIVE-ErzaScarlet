@@ -92,7 +92,7 @@ if ENV:
     SPAMWATCH_SUPPORT_CHAT = os.environ.get('SPAMWATCH_SUPPORT_CHAT', None)
     SPAMWATCH_API = os.environ.get('SPAMWATCH_API', None)
     BOT_ID = int(os.environ.get("BOT_ID", None))
-    BOT_USERNAME = int(os.environ.get("BOT_USERNAME", None))
+    BOT_USERNAME = os.environ.get("BOT_USERNAME", None)
     tbot = TelegramClient(None, API_ID, API_HASH)
 
     try:
