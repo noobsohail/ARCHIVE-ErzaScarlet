@@ -64,13 +64,13 @@ async def filter_requests(event):
             [Button.url("Ongoing", url="https://t.me/Ongoing_Anime1")]]
         await event.reply(f"**👋 Hello {user} !!**\n\n📍 Your Request for  `{anim}`  has been submitted to the admins.\n\n🚀 Your Request Will Be Uploaded In 48hours or less.\n📌 Please Note that Admins might be busy. So, this may take more time. \n\n**👇 See Your Request Status Here 👇**", buttons=btns)
         if not auth:
-            async for x in bot.iter_participants("@AN1ME_HUB_DISCUSSION", filter=ChannelParticipantsAdmins):
+            async for x in bot.iter_participants("@Indanimein", filter=ChannelParticipantsAdmins):
                 auth.append(x.id)
 
 @tbot.on(events.callbackquery.CallbackQuery(data="reqdelete"))
 async def delete_message(event):
     if not auth:
-        async for x in bot.iter_participants("@AN1ME_HUB_DISCUSSION", filter=ChannelParticipantsAdmins):
+        async for x in bot.iter_participants("@Indanimein", filter=ChannelParticipantsAdmins):
              auth.append(x.id)
     if event.sender_id in auth:
         x = await bot.get_messages(event.chat_id, ids=event.message_id)
@@ -90,7 +90,7 @@ async def delete_message(event):
 @tbot.on(events.callbackquery.CallbackQuery(data="unavl"))
 async def delete_message(event):
     if not auth:
-        async for x in bot.iter_participants("@AN1ME_HUB_DISCUSSION", filter=ChannelParticipantsAdmins):
+        async for x in bot.iter_participants("@Indanimein", filter=ChannelParticipantsAdmins):
              auth.append(x.id)
     if event.sender_id in auth:
         x = await bot.get_messages(event.chat_id, ids=event.message_id)
@@ -103,7 +103,7 @@ async def delete_message(event):
             [Button.url("Ongoing", url="https://t.me/Ongoing_Anime1")]]
        
         await event.edit(f"**UNAVAILABLE**\n\n~~{xx}~~", buttons=[Button.inline("❗ Unavailable ❗", data="navl")])
-        await tbot.send_message(-1001459815052, f"**⚠️ Request Unavailable ⚠️**\n\n~~{xx}~~", buttons=btns)
+        await tbot.send_message(-1001415010098, f"**⚠️ Request Unavailable ⚠️**\n\n~~{xx}~~", buttons=btns)
     else:
         await event.answer("Who TF are you? This is for admins only..", alert=True, cache_time=0)
         
@@ -111,7 +111,7 @@ async def delete_message(event):
 @tbot.on(events.callbackquery.CallbackQuery(data="isdone"))
 async def isdone(e):
     if not auth:
-        async for x in bot.iter_participants("@AN1ME_HUB_DISCUSSION", filter=ChannelParticipantsAdmins):
+        async for x in bot.iter_participants("@Indanimein", filter=ChannelParticipantsAdmins):
              auth.append(x.id)
     if e.sender_id in auth:
         x = await bot.get_messages(e.chat_id, ids=e.message_id)
@@ -124,7 +124,7 @@ async def isdone(e):
             [Button.url("Ongoing", url="https://t.me/Ongoing_Anime1")]]
        
         await e.edit(f"**COMPLETED**\n\n~~{xx}~~", buttons=[Button.inline("Request Completed ✅", data="donne")])
-        await tbot.send_message(-1001459815052, f"**Request Completed**\n\n~~{xx}~~", buttons=btns)
+        await tbot.send_message(-1001415010098, f"**Request Completed**\n\n~~{xx}~~", buttons=btns)
     else:
         await e.answer("Who TF are you? This is for admins only..", alert=True, cache_time=0)
         
