@@ -174,7 +174,7 @@ else:
 
 
 updater = tg.Updater(TOKEN, workers=WORKERS, use_context=True)
-telethn = TelegramClient("ErzaScarlet", API_ID, API_HASH).start(BOT_TOKEN=BOT_TOKEN)
+telethn = TelegramClient("ErzaScarlet", API_ID, API_HASH).start(BOT_TOKEN=TOKEN)
 dispatcher = updater.dispatcher
 
 DRAGONS = list(DRAGONS) + list(DEV_USERS)
