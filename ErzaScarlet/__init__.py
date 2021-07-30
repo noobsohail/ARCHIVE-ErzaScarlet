@@ -92,7 +92,7 @@ if ENV:
     SPAMWATCH_SUPPORT_CHAT = os.environ.get('SPAMWATCH_SUPPORT_CHAT', None)
     SPAMWATCH_API = os.environ.get('SPAMWATCH_API', None)
     BOT_ID = int(os.environ.get("BOT_ID", None))
-    BOT_NAME = int(os.environ.get("BOT_NAME", None))
+    BOT_USERNAME = int(os.environ.get("BOT_USERNAME", None))
     tbot = TelegramClient(None, API_ID, API_HASH)
 
     try:
@@ -164,7 +164,7 @@ else:
     SPAMWATCH_API = Config.SPAMWATCH_API
     BOT_ID = Config.BOT_ID
     INFOPIC = Config.INFOPIC
-    BOT_NAME = Config.BOT_NAME
+    BOT_USERNAME = Config.BOT_USERNAME
 
     try:
         BL_CHATS = set(int(x) for x in Config.BL_CHATS or [])
