@@ -82,7 +82,7 @@ if ENV:
     STRICT_GBAN = bool(os.environ.get('STRICT_GBAN', False))
     WORKERS = int(os.environ.get('WORKERS', 8))
     BAN_STICKER = os.environ.get('BAN_STICKER',
-                                 'CAADAgADOwADPPEcAXkko5EB3YGYAg')
+                                 'CAACAgUAAx0CVFdXMgACDN5hBBlhPkEm5h30rd9dTChwdFMYowACJQIAAqYm2VchtIYDTjorSSAE')
     ALLOW_EXCL = os.environ.get('ALLOW_EXCL', False)
     CASH_API_KEY = os.environ.get('CASH_API_KEY', None)
     TIME_API_KEY = os.environ.get('TIME_API_KEY', None)
@@ -91,12 +91,11 @@ if ENV:
     SUPPORT_CHAT = os.environ.get('SUPPORT_CHAT', None)
     SPAMWATCH_SUPPORT_CHAT = os.environ.get('SPAMWATCH_SUPPORT_CHAT', None)
     SPAMWATCH_API = os.environ.get('SPAMWATCH_API', None)
+    BOT_NAME = os.environ.get("BOT_NAME")
     BOT_ID = int(os.environ.get("BOT_ID", None))
     BOT_USERNAME = os.environ.get("BOT_USERNAME", None)
-    BOT_TOKEN = os.environ.get("TOKEN", None)
-    TRIGGERS = os.environ.get("TRIGGERS", "/ !").split(" ")
-    OWNER = list(filter(lambda x: x, map(int, os.environ.get("OWNER_ID").split())))  ## sudos can be included
     tbot = TelegramClient(None, API_ID, API_HASH)
+    
 
     try:
         BL_CHATS = set(int(x) for x in os.environ.get('BL_CHATS', "").split())
