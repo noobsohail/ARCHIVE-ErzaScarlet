@@ -3,7 +3,7 @@ from ErzaScarlet.modules.disable import DisableAbleCommandHandler
 from ErzaScarlet import dispatcher
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from telegram import MessageEntity, ParseMode, Update
+from telegram import ParseMode, Update
 from telegram.ext.dispatcher import run_async
 from telegram.ext import CallbackContext, Filters, CommandHandler
 
@@ -40,38 +40,43 @@ def echo(update: Update, context: CallbackContext):
 
     if message.reply_to_message:
         message.reply_to_message.reply_text(
-            args[1], parse_mode="MARKDOWN", disable_web_page_preview=True)
+            args[1], parse_mode="MARKDOWN", disable_web_page_preview=True
+        )
     else:
         message.reply_text(
-            args[1],
-            quote=False,
-            parse_mode="MARKDOWN",
-            disable_web_page_preview=True)
+            args[1], quote=False, parse_mode="MARKDOWN", disable_web_page_preview=True
+        )
     message.delete()
 
 
 def markdown_help_sender(update: Update):
-    update.effective_message.reply_text(
-        MARKDOWN_HELP, parse_mode=ParseMode.HTML)
+    update.effective_message.reply_text(MARKDOWN_HELP, parse_mode=ParseMode.HTML)
     update.effective_message.reply_text(
         "Try forwarding the following message to me, and you'll see, and Use #test!"
     )
     update.effective_message.reply_text(
         "/save test This is a markdown test. _italics_, *bold*, code, "
         "[URL](example.com) [button](buttonurl:github.com) "
-        "[button2](buttonurl://google.com:same)")
+        "[button2](buttonurl://google.com:same)"
+    )
 
 
 @run_async
 def markdown_help(update: Update, context: CallbackContext):
     if update.effective_chat.type != "private":
         update.effective_message.reply_text(
-            'Contact me in pm',
-            reply_markup=InlineKeyboardMarkup([[
-                InlineKeyboardButton(
-                    "Markdown help",
-                    url=f"t.me/{context.bot.username}?start=markdownhelp")
-            ]]))
+            "Contact me in pm",
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            "Markdown help",
+                            url=f"t.me/{context.bot.username}?start=markdownhelp",
+                        )
+                    ]
+                ]
+            ),
+        )
         return
     markdown_help_sender(update)
 
@@ -79,30 +84,31 @@ def markdown_help(update: Update, context: CallbackContext):
 __help__ = """
 *Available commands:*
 *Markdown:*
- • `/markdownhelp`*:* quick summary of how markdown works in telegram - can only be called in private chats
+ ❍ /markdownhelp*:* quick summary of how markdown works in telegram - can only be called in private chats
 *Paste:*
- • `/paste`*:* Saves replied content to `nekobin.com` and replies with a url
+ ❍ /paste*:* Saves replied content to `nekobin.com` and replies with a url
+*Gps*
+ ❍ /gps <location>*:* Get gps location.
+*Country*
+ ❍ /country <country name>: Gathering info about given country.
 *React:*
- • `/react`*:* Reacts with a random reaction 
+ ❍ /react*:* Reacts with a random reaction 
 *Urban Dictonary:*
- • `/ud <word>`*:* Type the word or expression you want to search use
+ ❍ /ud <word>*:* Type the word or expression you want to search use
 *Wikipedia:*
- • `/wiki <query>`*:* wikipedia your query
+ ❍ /wiki <query>*:* wikipedia your query
+*Wallpapers:*
+ ❍ /wall <query>*:* get a wallpaper from wall.alphacoders.com
+*Json*
+ ❍ /json*:* Get Detailed info about any message
 *Currency converter:* 
- • `/cash`*:* currency converter
+ ❍ /cash*:* currency converter
 Example:
  `/cash 1 USD INR`  
       _OR_
  `/cash 1 usd inr`
 Output: `1.0 USD = 75.505 INR`
 
-*Time*
- • `/time <query>`*:* Gives information about a timezone.
- - *Available queries:* Country Code/Country Name/Timezone Name [Timezones list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
- 
-*Sed*
- • `s/<text1>/<text2>(/<flag>)`*:* Reply to a message with this to perform a sed operation on that message, replacing all \
-occurrences of 'text1' with 'text2'.
 """
 
 ECHO_HANDLER = DisableAbleCommandHandler("echo", echo, filters=Filters.group)
@@ -111,8 +117,8 @@ MD_HELP_HANDLER = CommandHandler("markdownhelp", markdown_help)
 dispatcher.add_handler(ECHO_HANDLER)
 dispatcher.add_handler(MD_HELP_HANDLER)
 
-__mod_name__ = "Extras"
-__command_list__ = ["id", "echo", "time"]
+__mod_name__ = "EXTRAS"
+__command_list__ = ["id", "echo"]
 __handlers__ = [
     ECHO_HANDLER,
     MD_HELP_HANDLER,

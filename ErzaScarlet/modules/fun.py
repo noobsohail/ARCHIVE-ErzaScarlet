@@ -2,13 +2,16 @@ import html
 import random
 import time
 
+from typing import Optional
 from telegram import ParseMode, Update, ChatPermissions
 from telegram.ext import CallbackContext, run_async
+from tswift import Song
 from telegram.error import BadRequest
 
 import ErzaScarlet.modules.fun_strings as fun_strings
 from ErzaScarlet import dispatcher
 from ErzaScarlet.modules.disable import DisableAbleCommandHandler
+from ErzaScarlet.modules.helper_funcs.alternate import send_message, typing_action
 from ErzaScarlet.modules.helper_funcs.chat_status import (is_user_admin)
 from ErzaScarlet.modules.helper_funcs.extraction import extract_user
 
@@ -36,6 +39,11 @@ def sanitize(update: Update, context: CallbackContext):
     reply_animation(
         random.choice(fun_strings.GIFS), caption=f'*Sanitizes {name}*')
 
+@run_async
+def eightball(update: Update, context: CallbackContext):
+    reply_text = update.effective_message.reply_to_message.reply_text if update.effective_message.reply_to_message else update.effective_message.reply_text
+    reply_text(random.choice(fun_strings.EIGHTBALL))
+
 
 @run_async
 def slap(update: Update, context: CallbackContext):
@@ -49,7 +57,7 @@ def slap(update: Update, context: CallbackContext):
     user_id = extract_user(message, args)
 
     if user_id == bot.id:
-        temp = random.choice(fun_strings.SLAP_SAITAMA_TEMPLATES)
+        temp = random.choice(fun_strings.SLAP_BOTS_TEMPLATES)
 
         if isinstance(temp, list):
             if temp[2] == "tmute":
@@ -83,8 +91,9 @@ def slap(update: Update, context: CallbackContext):
     hit = random.choice(fun_strings.HIT)
     throw = random.choice(fun_strings.THROW)
 
-    if update.effective_user.id == 1096215023:
-        temp = "@NeoTheKitty scratches {user2}"
+    if update.effective_user.id == 1410092658:
+        temp = ".... scratches {user2}"
+        
 
     reply = temp.format(
         user1=user1, user2=user2, item=item, hits=hit, throws=throw)
@@ -131,6 +140,33 @@ def pat(update: Update, context: CallbackContext):
         temp = random.choice(fun_strings.PAT_TEMPLATES)
         reply = temp.format(user1=user1, user2=user2)
         reply_to.reply_text(reply, parse_mode=ParseMode.HTML)
+
+@run_async
+@typing_action
+def lyrics(update: Update, context: CallbackContext):
+    bot, args = context.bot, context.args
+    msg = update.effective_message
+    query = " ".join(args)
+    song = ""
+    if not query:
+        msg.reply_text("You haven't specified which song to look for!")
+        return
+    song = Song.find_song(query)
+    if song:
+        if song.lyrics:
+            reply = song.format()
+        else:
+            reply = "Couldn't find any lyrics for that song!"
+    else:
+        reply = "Song not found!"
+    if len(reply) > 4090:
+        with open("lyrics.txt", 'w') as f:
+            f.write(f"{reply}\n\n\nOwO UwU OmO")
+        with open("lyrics.txt", 'rb') as f:
+            msg.reply_document(document=f,
+            caption="Message length exceeded max limit! Sending as a text file.")
+    else:
+        msg.reply_text(reply)
 
 
 @run_async
@@ -183,32 +219,45 @@ def table(update: Update, context: CallbackContext):
     reply_text = update.effective_message.reply_to_message.reply_text if update.effective_message.reply_to_message else update.effective_message.reply_text
     reply_text(random.choice(fun_strings.TABLE))
 
-    
-@run_async
-def truth(update: Update, context: CallbackContext):
-    update.effective_message.reply_text(random.choice(fun_strings.TRUTH_STRINGS))
+normiefont = [
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+    'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+]
+weebyfont = [
+    '卂', '乃', '匚', '刀', '乇', '下', '厶', '卄', '工', '丁', '长', '乚', '从', '𠘨', '口',
+    '尸', '㔿', '尺', '丂', '丅', '凵', 'リ', '山', '乂', '丫', '乙'
+]
 
 
 @run_async
-def dare(update: Update, context: CallbackContext):
-    update.effective_message.reply_text(random.choice(fun_strings.DARE_STRINGS))
+def weebify(update: Update, context: CallbackContext):
+    args = context.args
+    message = update.effective_message
+    string = ""
 
+    if message.reply_to_message:
+        string = message.reply_to_message.text.lower().replace(" ", "  ")
 
-@run_async
-def tord(update: Update, context: CallbackContext):
-    update.effective_message.reply_text(random.choice(fun_strings.TORD_STRINGS))
+    if args:
+        string = '  '.join(args).lower()
 
-TNG = "https://telegra.ph/file/2632bf79c7a184cac562c.png"    
-    
-@run_async
-def tng(update, context):
-    number = random.choice(range(1, 147))
-    update.effective_message.reply_photo(TNG, caption=number,
-                        parse_mode=ParseMode.MARKDOWN)    
+    if not string:
+        message.reply_text(
+            "Usage is `/weebify <text>`", parse_mode=ParseMode.MARKDOWN)
+        return
+
+    for normiecharacter in string:
+        if normiecharacter in normiefont:
+            weebycharacter = weebyfont[normiefont.index(normiecharacter)]
+            string = string.replace(normiecharacter, weebycharacter)
+
+    if message.reply_to_message:
+        message.reply_to_message.reply_text(string)
+    else:
+        message.reply_text(string)
 
 
 __help__ = """
-⎔ *Fun Commands*
  • `/runs`*:* reply a random string from an array of replies
  • `/slap`*:* slap a user, or get slapped if not a reply
  • `/shrug`*:* get shrug XD
@@ -220,16 +269,15 @@ __help__ = """
  • `/rlg`*:* Join ears,nose,mouth and create an emo ;-;
  • `/shout <keyword>`*:* write anything you want to give loud shout
  • `/weebify <text>`*:* returns a weebified text
+ • `/truth `*:* for random truth
+ • `/dare `*:* for random dare
  • `/sanitize`*:* always use this before /pat or any contact
  • `/pat`*:* pats a user, or get patted
- 
- ⎔ *Game Commands*
- • `/truth`*:* asks you a question
- • `/dare`*:* gives you a dare
- • `/tord`*:* can be a truth or a dare
- • `/tng`*:* TNG: The Number Game, answer the question respective to the number.
- 
- *NOTE*: Module can be disabled by using `/disablemod fun`.
+ • `/fun`*:* funny text,stricker and gif send
+ • `/aq`*:* get random anime quote
+ • `/plet <text> `*:* text get funny emojify
+ • `/tts <text> `*:* text to voice
+ • `/8ball`*:* predicts using 8ball method
 """
 
 SANITIZE_HANDLER = DisableAbleCommandHandler("sanitize", sanitize)
@@ -242,17 +290,10 @@ SHRUG_HANDLER = DisableAbleCommandHandler("shrug", shrug)
 BLUETEXT_HANDLER = DisableAbleCommandHandler("bluetext", bluetext)
 RLG_HANDLER = DisableAbleCommandHandler("rlg", rlg)
 DECIDE_HANDLER = DisableAbleCommandHandler("decide", decide)
+EIGHTBALL_HANDLER = DisableAbleCommandHandler("8ball", eightball)
 TABLE_HANDLER = DisableAbleCommandHandler("table", table)
-TRUTH_HANDLER = DisableAbleCommandHandler("truth", truth)
-DARE_HANDLER = DisableAbleCommandHandler("dare", dare)
-TORD_HANDLER = DisableAbleCommandHandler("tord", tord)
-TNG_HANDLER = DisableAbleCommandHandler("tng", tng)
+WEEBIFY_HANDLER = DisableAbleCommandHandler("weebify", weebify)
 
-dispatcher.add_handler(TRUTH_HANDLER)
-dispatcher.add_handler(DARE_HANDLER)
-dispatcher.add_handler(TORD_HANDLER)
-
-dispatcher.add_handler(TNG_HANDLER)
 dispatcher.add_handler(SANITIZE_HANDLER)
 dispatcher.add_handler(RUNS_HANDLER)
 dispatcher.add_handler(SLAP_HANDLER)
@@ -260,21 +301,20 @@ dispatcher.add_handler(PAT_HANDLER)
 dispatcher.add_handler(ROLL_HANDLER)
 dispatcher.add_handler(TOSS_HANDLER)
 dispatcher.add_handler(SHRUG_HANDLER)
+dispatcher.add_handler(EIGHTBALL_HANDLER)
 dispatcher.add_handler(BLUETEXT_HANDLER)
 dispatcher.add_handler(RLG_HANDLER)
 dispatcher.add_handler(DECIDE_HANDLER)
 dispatcher.add_handler(TABLE_HANDLER)
+dispatcher.add_handler(WEEBIFY_HANDLER)
 
-
-
-
-__mod_name__ = "Fun & Games"
+__mod_name__ = "FUN"
 __command_list__ = [
     "runs", "slap", "roll", "toss", "shrug", "bluetext", "rlg", "decide",
-    "table", "pat", "sanitize", "truth", "dare", "tord", "tng",
+    "table", "pat", "sanitize", "weebify",
 ]
 __handlers__ = [
     RUNS_HANDLER, SLAP_HANDLER, PAT_HANDLER, ROLL_HANDLER, TOSS_HANDLER,
     SHRUG_HANDLER, BLUETEXT_HANDLER, RLG_HANDLER, DECIDE_HANDLER, TABLE_HANDLER,
-    SANITIZE_HANDLER, TRUTH_HANDLER, DARE_HANDLER, TORD_HANDLER, TNG_HANDLER,
+    SANITIZE_HANDLER, EIGHTBALL_HANDLER, WEEBIFY_HANDLER
 ]
