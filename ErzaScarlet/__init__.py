@@ -5,6 +5,8 @@ import time
 import spamwatch
 import telegram.ext as tg
 
+from pyrogram import Client, errors
+from pymongo import MongoClient
 from telethon import TelegramClient
 
 StartTime = time.time()
@@ -72,6 +74,7 @@ if ENV:
     API_ID = os.environ.get('API_ID', None)
     API_HASH = os.environ.get('API_HASH', None)
     DB_URI = os.environ.get('DATABASE_URL')
+    MONGO_DB_URI = os.environ.get('MONGO_DB_URI', None)
     DONATION_LINK = os.environ.get('DONATION_LINK')
     LOAD = os.environ.get("LOAD", "").split()
     NO_LOAD = os.environ.get("NO_LOAD", "translation").split()
@@ -88,6 +91,7 @@ if ENV:
     SUPPORT_CHAT = os.environ.get('SUPPORT_CHAT', None)
     SPAMWATCH_SUPPORT_CHAT = os.environ.get('SPAMWATCH_SUPPORT_CHAT', None)
     SPAMWATCH_API = os.environ.get('SPAMWATCH_API', None)
+    tbot = TelegramClient(None, API_ID, API_HASH)
 
     try:
         BL_CHATS = set(int(x) for x in os.environ.get('BL_CHATS', "").split())
@@ -140,6 +144,7 @@ else:
     API_ID = Config.API_ID
     API_HASH = Config.API_HASH
     DB_URL = Config.SQLALCHEMY_DATABASE_URI
+    MONGO_DB_URI = Config.MONGO_DB_URI
     DONATION_LINK = Config.DONATION_LINK
     LOAD = Config.LOAD
     NO_LOAD = Config.NO_LOAD
@@ -175,6 +180,9 @@ else:
 
 updater = tg.Updater(TOKEN, workers=WORKERS, use_context=True)
 telethn = TelegramClient("ErzaScarlet", API_ID, API_HASH)
+pbot = Client("erzapbot", api_id=API_ID, api_hash=API_HASH, bot_token=TOKEN)
+mongo_client = MongoClient(MONGO_DB_URI)
+db = mongo_client.ErzaScarlet
 dispatcher = updater.dispatcher
 
 DRAGONS = list(DRAGONS) + list(DEV_USERS)
