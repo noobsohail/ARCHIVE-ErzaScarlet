@@ -1,20 +1,20 @@
 from telethon.tl.types import ChannelParticipantsAdmins
 from telethon.utils import get_display_name
 from telethon import *
-from . import API_ID, API_HASH, BOT_TOKEN, tbot, OWNER
+from . import API_ID, API_HASH, BOT_TOKEN, telethn, OWNER
 from anibot.events import register
 import logging
 logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
                     level=logging.WARNING)
 
-IN_GRP = -1001459815052
-bot = asst = tbot
-REQ_GO = -1001176025751
-on = tbot.on
+IN_GRP = -1001579439262
+bot = asst = telethn
+REQ_GO = -1001579439262
+on = telethn.on
 auth = OWNER
 
 
-@tbot.on(events.NewMessage(chats=IN_GRP))
+@telethn.on(events.NewMessage(chats=IN_GRP))
 async def filter_requests(event):
     if event.fwd_from:
         return
@@ -67,7 +67,7 @@ async def filter_requests(event):
             async for x in bot.iter_participants("@AN1ME_HUB_DISCUSSION", filter=ChannelParticipantsAdmins):
                 auth.append(x.id)
 
-@tbot.on(events.callbackquery.CallbackQuery(data="reqdelete"))
+@telethn.on(events.callbackquery.CallbackQuery(data="reqdelete"))
 async def delete_message(event):
     if not auth:
         async for x in bot.iter_participants("@AN1ME_HUB_DISCUSSION", filter=ChannelParticipantsAdmins):
@@ -83,11 +83,11 @@ async def delete_message(event):
             [Button.url("💌 AMV 💌", url="https://t.me/AnimeHub_Amv")]]
        
         await event.edit(f"**REJECTED**\n\n~~{xx}~~", buttons=[Button.inline("Request Rejected 🚫", data="ndone")])
-        await tbot.send_message(-1001459815052, f"**⚠️ Request Rejected By Admin !!**\n\n~~{xx}~~", buttons=btns)
+        await telethn.send_message(-1001579439262, f"**⚠️ Request Rejected By Admin !!**\n\n~~{xx}~~", buttons=btns)
     else:
         await event.answer("Who TF are you? This is for admins only..", alert=True, cache_time=0)
         
-@tbot.on(events.callbackquery.CallbackQuery(data="unavl"))
+@telethn.on(events.callbackquery.CallbackQuery(data="unavl"))
 async def delete_message(event):
     if not auth:
         async for x in bot.iter_participants("@AN1ME_HUB_DISCUSSION", filter=ChannelParticipantsAdmins):
@@ -103,12 +103,12 @@ async def delete_message(event):
             [Button.url("💌 AMV 💌", url="https://t.me/AnimeHub_Amv")]]
        
         await event.edit(f"**UNAVAILABLE**\n\n~~{xx}~~", buttons=[Button.inline("❗ Unavailable ❗", data="navl")])
-        await tbot.send_message(-1001459815052, f"**⚠️ Request Unavailable ⚠️**\n\n~~{xx}~~", buttons=btns)
+        await telethn.send_message(-1001579439262, f"**⚠️ Request Unavailable ⚠️**\n\n~~{xx}~~", buttons=btns)
     else:
         await event.answer("Who TF are you? This is for admins only..", alert=True, cache_time=0)
         
         
-@tbot.on(events.callbackquery.CallbackQuery(data="isdone"))
+@telethn.on(events.callbackquery.CallbackQuery(data="isdone"))
 async def isdone(e):
     if not auth:
         async for x in bot.iter_participants("@AN1ME_HUB_DISCUSSION", filter=ChannelParticipantsAdmins):
@@ -124,20 +124,20 @@ async def isdone(e):
             [Button.url("💌 AMV 💌", url="https://t.me/AnimeHub_Amv")]]
        
         await e.edit(f"**COMPLETED**\n\n~~{xx}~~", buttons=[Button.inline("Request Completed ✅", data="donne")])
-        await tbot.send_message(-1001459815052, f"**Request Completed**\n\n~~{xx}~~", buttons=btns)
+        await telethn.send_message(-1001579439262, f"**Request Completed**\n\n~~{xx}~~", buttons=btns)
     else:
         await e.answer("Who TF are you? This is for admins only..", alert=True, cache_time=0)
         
     
-@tbot.on(events.callbackquery.CallbackQuery(data="donne"))
+@telethn.on(events.callbackquery.CallbackQuery(data="donne"))
 async def ans(e):
     await e.answer("This Request Is Completed... Checkout @AN1ME_HUB 💖", alert=True, cache_time=0)
         
-@tbot.on(events.callbackquery.CallbackQuery(data="navl"))
+@telethn.on(events.callbackquery.CallbackQuery(data="navl"))
 async def ans(e):
     await e.answer("This Request Is Marked Unavailable By Admins", alert=True, cache_time=0)
         
         
-@tbot.on(events.callbackquery.CallbackQuery(data="ndone"))
+@telethn.on(events.callbackquery.CallbackQuery(data="ndone"))
 async def ans(e):
     await e.answer("This Request is unavailable... Ask Admins in @AN1ME_HUB_DISCUSSION for help. 💞", alert=True, cache_time=0)
