@@ -8,9 +8,9 @@ from ErzaScarlet.events import register
 
 client = MongoClient()
 client = MongoClient(MONGO_DB_URI)
-db = client["darkuserbot"]
+db = client["erzadbbot"]
 approved_users = db.approve
-dbb = client["darkuserbot"]
+dbb = client["erzadbbot"]
 poll_id = dbb.pollid
 
 
