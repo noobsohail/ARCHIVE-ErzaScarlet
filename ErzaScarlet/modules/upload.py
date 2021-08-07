@@ -9,7 +9,7 @@ from telethon import events
 
 from ErzaScarlet import telethn as bot
 from ErzaScarlet.modules.urluploader import download_file
-from ... uputils import humanbytes, progress
+from ErzaScarlet.uputils import humanbytes, progress
 
 DOWNLOADPATH = "Downloads/"
 
