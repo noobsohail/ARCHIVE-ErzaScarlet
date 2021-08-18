@@ -1,153 +1,92 @@
-  
-import json
+import re
+import html
+import aiohttp
+from datetime import datetime
+from asyncio import sleep
 import os
-import time
-
-from pymongo import MongoClient
-from telethon import types
-from telethon.tl import functions
-from telethon.tl.types import DocumentAttributeAudio
-from youtube_dl import YoutubeDL
-from youtube_dl.utils import (
-    ContentTooShortError,
-    DownloadError,
-    ExtractorError,
-    GeoRestrictedError,
-    MaxDownloadsReached,
-    PostProcessingError,
-    UnavailableVideoError,
-    XAttrMetadataError,
-)
-from youtubesearchpython import SearchVideos
-
-from ErzaScarlet import MONGO_DB_URI, tbot
-from ErzaScarlet.events import register
-
-client = MongoClient()
-client = MongoClient(MONGO_DB_URI)
-db = client["erzadbbot"]
-approved_users = db.approve
+from pytube import YouTube
+from youtubesearchpython import VideosSearch
+from ErzaScarlet.utils.ut import get_arg
+from ErzaScarlet import pbot, LOGGER
+from pyrogram import Client, filters
+from pyrogram.errors import PeerIdInvalid
+from pyrogram.types import Message
 
 
-async def is_register_admin(chat, user):
-    if isinstance(chat, (types.InputPeerChannel, types.InputChannel)):
-        return isinstance(
-            (
-                await tbot(functions.channels.GetParticipantRequest(chat, user))
-            ).participant,
-            (types.ChannelParticipantAdmin, types.ChannelParticipantCreator),
-        )
-    if isinstance(chat, types.InputPeerUser):
-        return True
+def yt_search(song):
+    videosSearch = VideosSearch(song, limit=1)
+    result = videosSearch.result()
+    if not result:
+        return False
+    else:
+        video_id = result["result"][0]["id"]
+        url = f"https://youtu.be/{video_id}"
+        return url
 
 
-@register(pattern="^/song (.*)")
-async def download_song(v_url):
-    approved_userss = approved_users.find({})
-    for ch in approved_userss:
-        iid = ch["id"]
-        userss = ch["user"]
-    if v_url.is_group:
-        if await is_register_admin(v_url.input_chat, v_url.message.sender_id):
-            pass
-        elif v_url.chat_id == iid and v_url.sender_id == userss:
-            pass
-        else:
-            return
-    url = v_url.pattern_match.group(1)
-    rkp = await v_url.reply("Processing...")
-    if not url:
-        await rkp.edit("**What's the song you want?**\nUsage`/song <song name>`")
-    search = SearchVideos(url, offset=1, mode="json", max_results=1)
-    test = search.result()
-    p = json.loads(test)
-    q = p.get("search_result")
+class AioHttp:
+    @staticmethod
+    async def get_json(link):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(link) as resp:
+                return await resp.json()
+
+    @staticmethod
+    async def get_text(link):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(link) as resp:
+                return await resp.text()
+
+    @staticmethod
+    async def get_raw(link):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(link) as resp:
+                return await resp.read()
+
+
+
+@pbot.on_message(filters.command("song"))
+async def song(client, message):
+    chat_id = message.chat.id
+    user_id = message.from_user["id"]
+    args = get_arg(message) + " " + "song"
+    if args.startswith(" "):
+        await message.reply("Enter a song name. Check /help")
+        return ""
+    status = await message.reply("Processing...")
+    video_link = yt_search(args)
+    if not video_link:
+        await status.edit("Song not found.")
+        return ""
+    yt = YouTube(video_link)
+    audio = yt.streams.filter(only_audio=True).first()
     try:
-        url = q[0]["link"]
-    except BaseException:
-        return await rkp.edit("`Failed to find that song`")
-    type = "audio"
-    await rkp.edit("Preparing to download...")
-    if type == "audio":
-        opts = {
-            "format": "bestaudio",
-            "addmetadata": True,
-            "key": "FFmpegMetadata",
-            "writethumbnail": True,
-            "prefer_ffmpeg": True,
-            "geo_bypass": True,
-            "nocheckcertificate": True,
-            "postprocessors": [
-                {
-                    "key": "FFmpegExtractAudio",
-                    "preferredcodec": "mp3",
-                    "preferredquality": "320",
-                }
-            ],
-            "outtmpl": "%(id)s.mp3",
-            "quiet": True,
-            "logtostderr": False,
-        }
-        song = True
-    try:
-        await rkp.edit("Downloading...")
-        with YoutubeDL(opts) as rip:
-            rip_data = rip.extract_info(url)
-    except DownloadError as DE:
-        await rkp.edit(f"`{str(DE)}`")
-        return
-    except ContentTooShortError:
-        await rkp.edit("`The download content was too short.`")
-        return
-    except GeoRestrictedError:
-        await rkp.edit(
-            "`Video is not available from your geographic location due to geographic restrictions imposed by a website.`"
-        )
-        return
-    except MaxDownloadsReached:
-        await rkp.edit("`Max-downloads limit has been reached.`")
-        return
-    except PostProcessingError:
-        await rkp.edit("`There was an error during post processing.`")
-        return
-    except UnavailableVideoError:
-        await rkp.edit("`Media is not available in the requested format.`")
-        return
-    except XAttrMetadataError as XAME:
-        await rkp.edit(f"`{XAME.code}: {XAME.msg}\n{XAME.reason}`")
-        return
-    except ExtractorError:
-        await rkp.edit("`There was an error during info extraction.`")
-        return
-    except Exception as e:
-        await rkp.edit(f"{str(type(e)): {str(e)}}")
-        return
-    time.time()
-    if song:
-        await rkp.edit("Uploading...")
-
-        lel = await v_url.client.send_file(
-            v_url.chat_id,
-            f"{rip_data['id']}.mp3",
-            supports_streaming=False,
-            force_document=False,
-            allow_cache=False,
-            attributes=[
-                DocumentAttributeAudio(
-                    duration=int(rip_data["duration"]),
-                    title=str(rip_data["title"]),
-                    performer=str(rip_data["uploader"]),
-                )
-            ],
-        )
-        await rkp.delete()
-        os.system("rm -rf *.mp3")
-        os.system("rm -rf *.webp")
-
-
+        download = audio.download(filename=f"{str(user_id)}")
+    except Exception as ex:
+        await status.edit("Failed to download song")
+        LOGGER.error(ex)
+        return ""
+    rename = os.rename(download, f"{str(user_id)}.mp3")
+    await pbot.send_chat_action(message.chat.id, "upload_audio")
+    await pbot.send_audio(
+        chat_id=message.chat.id,
+        audio=f"{str(user_id)}.mp3",
+        duration=int(yt.length),
+        title=str(yt.title),
+        performer=str(yt.author),
+        reply_to_message_id=message.message_id,
+    )
+    await status.delete()
+    os.remove(f"{str(user_id)}.mp3")
+	
+	
+	
 __help__ = """
- • `/song <song name>`*:* uploads the song from YouTube in the best quality available.
- • `/lyrics <song name>`*:* provides the lyrics of the song you want.
+ *You can either enter just the song name or both the artist and song
+  name. *
+ ✪ /song <songname artist(optional)>*:* uploads the song in it's best quality available
+ ✪ /video <songname artist(optional)>*:* uploads the video song in it's best quality available
+ ✪ /lyrics <song>*:* returns the lyrics of that song.
 """
 
-__mod_name__ = "Songs"
+__mod_name__ = "Music"
