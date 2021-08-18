@@ -79,3 +79,4 @@ pykeyboard
 loguru
 envparse
 faker
+wget

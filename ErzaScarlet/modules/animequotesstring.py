@@ -1,4 +1,5 @@
-#MADE BY TG = @SOHAILKHAN_ANIME | GITHUB NOOBSOHAIL
+#MADE BY TG = @SOHAILKHAN_ANIME | GITHUB NOOBSOHAIL 
+#FAIRY TAIL QUOTES
 ANIMEQUOTES=(
 "If you truly desire greatness, you must first know what makes you weak!",
 "Magic is not meant to be used to kill people... but without power we can't protect the ones we love.",
