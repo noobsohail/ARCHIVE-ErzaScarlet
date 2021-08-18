@@ -11,6 +11,7 @@ from ErzaScarlet import pbot, LOGGER
 from pyrogram import Client, filters
 from pyrogram.errors import PeerIdInvalid
 from pyrogram.types import Message
+from pyrogram import Client
 
 
 def yt_search(song):
@@ -45,7 +46,7 @@ class AioHttp:
 
 
 
-@pbot.on_message(filters.command("song"))
+@Client.on_message(filters.command("song"))
 async def song(client, message):
     chat_id = message.chat.id
     user_id = message.from_user["id"]
