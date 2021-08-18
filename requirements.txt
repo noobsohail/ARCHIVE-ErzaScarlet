@@ -52,7 +52,6 @@ validators
 PyDictionary==2.0.1
 hachoir
 odmantic
-telethon
 telegraph
 ujson
 pretty_errors
