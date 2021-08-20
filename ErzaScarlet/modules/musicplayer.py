@@ -8,6 +8,8 @@ from pytube import YouTube
 from youtubesearchpython import VideosSearch
 from ErzaScarlet.utils.ut import get_arg
 from ErzaScarlet import pbot, LOGGER
+from ErzaScarlet import dispatcher
+from ErzaScarlet.modules.disable import DisableAbleCommandHandler
 from pyrogram import Client, filters
 from pyrogram.errors import PeerIdInvalid
 from pyrogram.types import Message
@@ -90,3 +92,9 @@ __help__ = """
 """
 
 __mod_name__ = "Music"
+
+
+MUSICPLAYER_HANDLER = DisableAbleCommandHandler("song", song)
+dispatcher.add_handler(MUSICPLAYER_HANDLER)
+__command_list__ = ["song"]
+__handlers__ = [MUSICPLAYER_HANDLER]

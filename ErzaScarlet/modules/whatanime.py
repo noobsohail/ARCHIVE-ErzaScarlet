@@ -9,7 +9,8 @@ import tempfile
 from urllib.parse import quote as urlencode
 from decimal import Decimal
 from datetime import timedelta
-
+from ErzaScarlet import dispatcher
+from ErzaScarlet.modules.disable import DisableAbleCommandHandler
 from pyrogram import Client, filters
 from pyrogram.types import Message
 
@@ -147,3 +148,14 @@ async def progress_callback(current, total, reply):
             prevtext = text
             last_edit_time = time.time()
             progress_callback_data[message_identifier] = last_edit_time, prevtext, start_time
+
+__help__ = """
+Get anime details | Episode , Series details.
+use /whatanime 
+"""
+
+WHATANIME_HANDLER = DisableAbleCommandHandler("whatanime", whatanime)
+dispatcher.add_handler(WHATANIME_HANDLER)
+__mod_name__ = "What Anime?"
+__command_list__ = ["whatanime"]
+__handlers__ = [WHATANIME_HANDLER]
