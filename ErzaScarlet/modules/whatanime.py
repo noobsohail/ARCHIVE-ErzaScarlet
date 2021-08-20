@@ -153,9 +153,4 @@ __help__ = """
 Get anime details | Episode , Series details.
 use /whatanime 
 """
-
-WHATANIME_HANDLER = DisableAbleCommandHandler("whatanime", whatanime)
-dispatcher.add_handler(WHATANIME_HANDLER)
 __mod_name__ = "What Anime?"
-__command_list__ = ["whatanime"]
-__handlers__ = [WHATANIME_HANDLER]
