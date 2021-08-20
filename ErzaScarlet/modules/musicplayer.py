@@ -52,12 +52,12 @@ class AioHttp:
 async def song(client, message):
     chat_id = message.chat.id
     user_id = message.from_user.id
-args = message.text.split(" ", 1)
-if len(args)==1:
-    await message.reply("Enter a song name. Check /help")
-    return ""
-status = await message.reply("Processing...")
-video_link = yt_search(args[1])
+    args = message.text.split(" ", 1)
+    if len(args)==1:
+        await message.reply("Enter a song name. Check /help")
+        return ""
+    status = await message.reply("Processing...")
+    video_link = yt_search(args[1])
     if not video_link:
         await status.edit("Song not found.")
         return ""
