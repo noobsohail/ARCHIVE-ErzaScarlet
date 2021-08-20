@@ -93,9 +93,3 @@ __help__ = """
 """
 
 __mod_name__ = "Music"
-
-
-MUSICPLAYER_HANDLER = DisableAbleCommandHandler("song", song)
-dispatcher.add_handler(MUSICPLAYER_HANDLER)
-__command_list__ = ["song"]
-__handlers__ = [MUSICPLAYER_HANDLER]
