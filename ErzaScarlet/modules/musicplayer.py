@@ -58,8 +58,6 @@ if len(args)==1:
     return ""
 status = await message.reply("Processing...")
 video_link = yt_search(args[1])
-    status = await message.reply("Processing...")
-    video_link = yt_search(args)
     if not video_link:
         await status.edit("Song not found.")
         return ""
